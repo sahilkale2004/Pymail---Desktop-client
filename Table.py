@@ -1,15 +1,17 @@
 import tkinter as tk
 from tkinter import ttk
 import mysql.connector
+import os
+from dotenv import load_dotenv
 
 def fetch_data():
     try:
         # Establish connection to MySQL database
         mydb = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="123456",
-            database="USER"
+            host=os.getenv("HOST"),
+            user=os.getenv("USER"),
+            password=os.getenv("PASSWORD"),
+            database=os.getenv("DATABASE")
         )
         mycursor = mydb.cursor()
 

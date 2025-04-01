@@ -7,6 +7,11 @@ import os
 import schedule
 import time
 import pyttsx3
+from dotenv import load_dotenv
+
+# Get credentials from environment variables
+EMAIL_USER = os.getenv("EMAIL_USER")
+EMAIL_PSWD = os.getenv("EMAIL_PSWD")
 
 def send_emails():
     # Read data from Excel
@@ -30,7 +35,7 @@ def send_emails():
 
         # Construct the email
         msg = MIMEMultipart()
-        msg['From'] = 'automated.pymail123@gmail.com'
+        msg['From'] = 'EMAIL_USER'
         msg['To'] = email
         msg['Subject'] = subject
 
@@ -50,7 +55,7 @@ def send_emails():
         try:
             server = smtplib.SMTP('smtp.gmail.com', 587)
             server.starttls()
-            server.login('automated.pymail123@gmail.com', 'urws liex gwfm dhzm')
+            server.login('EMAIL_USER', 'EMAIL_PSWD')
             server.send_message(msg)
             server.quit()
             

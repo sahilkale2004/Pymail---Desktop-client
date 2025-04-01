@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 import mysql.connector
 import os
+from dotenv import load_dotenv
 
 def open_login():
     root.destroy()
@@ -20,10 +21,10 @@ def signup():
         try:
             # Establish a connection to MySQL database
             mydb = mysql.connector.connect(
-                host="localhost",
-                user="root",
-                password="123456",
-                database="USER"
+                host=os.getenv("HOST"),
+                user=os.getenv("USER"),
+                password=os.getenv("PASSWORD"),
+                database=os.getenv("DATABASE")
             )
             mycursor = mydb.cursor()
 
@@ -51,7 +52,7 @@ root.geometry('925x500+300+200')
 root.configure(bg='#fff')
 root.resizable(False, False)
 
-img = PhotoImage(file='Signup.png')
+img = PhotoImage(file="images/Signup.png")
 Label(root, image=img, border=0, bg='white').place(x=50, y=90)
 
 frame = Frame(root, width=350, height=390, bg='#fff')

@@ -31,6 +31,34 @@ entry_subject.grid(row=2, column=0, padx=10, pady=10)
 text_message = tk.Text(compose_frame, height=10, width=50)
 text_message.grid(row=3, column=0, padx=10, pady=10)
 
+# Function to send an email
+def send_email():
+    # Get the input values
+    sender_email = entry_sender_email.get()
+    recipient_email = entry_recipient_email.get()
+    subject = entry_subject.get()
+    message = text_message.get("1.0", "end-1c")
+
+    # Validate the input values
+    if not (sender_email and recipient_email and subject and message):
+        messagebox.showerror("Error", "All fields are required.")
+        return
+
+    # Send the email
+    try:
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(sender_email, "your_password_here")
+        message = f"Subject: {subject}\n\n{message}"
+        server.sendmail(sender_email, recipient_email, message)
+        server.quit()
+        messagebox.showinfo("Success", "Email sent successfully!")
+
+        # Display the email in the GUI
+        listbox_emails.insert('end', f"Subject: {subject}\nFrom: {sender_email}\nTo: {recipient_email}\nDate: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n{message}\n")
+    except Exception as e:
+        messagebox.showerror("Error", str(e))
+
 # Create the send button
 button_send = tk.Button(compose_frame, text="Send", command=send_email)
 button_send.grid(row=4, column=0, padx=10, pady=10)
