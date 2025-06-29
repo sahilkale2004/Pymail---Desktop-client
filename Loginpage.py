@@ -1,9 +1,12 @@
 from tkinter import *
 from tkinter import messagebox
-import webbrowser
 import os
+import subprocess
 import mysql.connector
 from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 def open_signup():
     root.destroy()
@@ -20,12 +23,9 @@ def fetch_data(email, password):
         )
         mycursor = mydb.cursor()
 
-        # Execute query to check if email and password match a record in the table
+        # Execute query to check if email and password match a record
         mycursor.execute("SELECT * FROM signup WHERE email = %s AND password = %s", (email, password))
-
-        # Fetch one row from the result set
         row = mycursor.fetchone()
-
         return row
 
     except mysql.connector.Error as e:
@@ -39,13 +39,12 @@ def Login():
     row = fetch_data(email, password)
 
     if row:
-        # Open the user's Gmail inbox based on the row number
-        url = f'https://mail.google.com/mail/u/{row[0]}#inbox'
-        webbrowser.open(url)
+        root.destroy()
+        subprocess.Popen(["python", "home.py"])
     else:
         messagebox.showerror("Invalid", "Invalid email and password")
 
-root = Tk()  
+root = Tk()
 root.title('Login')
 root.geometry('925x500+300+200')
 root.configure(bg="#fff")
@@ -60,38 +59,35 @@ frame.place(x=480, y=70)
 heading = Label(frame, text='Login', fg='#57a1f8', bg='white', font=('Microsoft YaHei UI Light', 23, 'bold'))
 heading.place(x=100, y=5)
 
-def on_enter(e):
-    user.delete(0, 'end')
+def on_email_enter(e):
+    if user.get() == 'Email':
+        user.delete(0, 'end')
 
-def on_leave(e):
-    name = user.get()
-    if name == '':
+def on_email_leave(e):
+    if user.get() == '':
         user.insert(0, 'Email')
 
 user = Entry(frame, width=40, fg='black', border=0, bg="white", font=('Microsoft YaHei UI Light', 11))
 user.place(x=30, y=80)
 user.insert(0, 'Email')
-user.bind('<FocusIn>', on_enter)
-user.bind('<FocusOut>', on_leave)
-
+user.bind('<FocusIn>', on_email_enter)
+user.bind('<FocusOut>', on_email_leave)
 Frame(frame, width=295, height=2, bg='black').place(x=25, y=107)
 
-def on_enter(e):
-    code.delete(0, 'end')
+def on_pass_enter(e):
+    if code.get() == 'Password':
+        code.delete(0, 'end')
 
-def on_leave(e):
-    name = code.get()
-    if name == '':
+def on_pass_leave(e):
+    if code.get() == '':
         code.insert(0, 'Password')
 
 code = Entry(frame, width=30, fg='black', border=0, bg="white", font=('Microsoft YaHei UI Light', 11))
 code.place(x=30, y=150)
 code.insert(0, 'Password')
-code.bind('<FocusIn>', on_enter)
-code.bind('<FocusOut>', on_leave)
-
+code.bind('<FocusIn>', on_pass_enter)
+code.bind('<FocusOut>', on_pass_leave)
 Frame(frame, width=295, height=2, bg='black').place(x=25, y=177)
-
 
 Button(frame, width=39, pady=7, text='Sign in', bg='#57a1f8', fg='white', border=0, command=Login).place(x=35, y=204)
 label = Label(frame, text="Don't have an account?", fg='black', bg='white', font=('Microsoft YaHei UI Light', 9))
